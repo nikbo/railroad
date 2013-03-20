@@ -1,22 +1,25 @@
 class Road
   def look
-    list
-    p_choice=nil
-    puts "What do you want to look?"
-    p_choice=gets.chomp
-    if p_choice=="stations" || p_choice=="station" || p_choice=="Stations" || p_choice=="Station" || p_choice=="STATION" || p_choice=="STATIONS"
-      p DB.execute("SELECT * FROM stations;")
-    elsif p_choice=="name" || p_choice=="names" || p_choice=="NAME" || p_choice=="NAMES"
-      puts "Insert name"
-      name_p=nil
-      name_p=gets.chomp
-      p DB.execute("SELECT * FROM contacts WHERE name='#{name_p}';")
-    else p DB.execute("SELECT * FROM contacts;")
+    choice = nil
+    until choice == 'e'
+      puts "Press 's' to list all stations on the line, 'w' to list all other stations with this station "
+      puts "Press 'e' to exit."
+      choice = gets.chomp
+      case choice
+        when 's'
+          line
+        when 'w'
+          station
+        when 'e'
+          exit
+        else
+          invalid
+      end
     end
   end
 
   def list
-    p lines=DB.execute("SELECT * FROM lines")
+    lines=DB.execute("SELECT * FROM lines")
     lines.map do|el|
        p el['id'].to_s+" "+el['name']
     end
@@ -45,9 +48,38 @@ class Road
       DB.execute("insert into stations (name, line_id) values ('#{station_name}', #{station_id});")
       puts "Station added!"
     else
-      pust "Wrong choice!!!"
+      puts "Wrong choice!!!"
       exit
     end
 
+  end
+
+  def line
+    list
+    puts "Insert id of line"
+    id_choice=nil
+    id_choice=gets.chomp
+    choice=DB.execute("select stations.name from stations where stations.line_id=#{id_choice};")
+    choice.map do|el|
+      p el['name']
+    end
+  end
+
+  def station
+    stations=DB.execute("SELECT * FROM stations")
+    stations.map do|el|
+      p el['id'].to_s+" "+el['name']+el['line_id'].to_s
+    end
+    puts "Insert id of start station"
+    station_choice=nil
+    station_choice=gets.chomp
+    ch=DB.execute("select line_id from stations where line_id=#{station_choice};")
+    s=ch[0]['line_id']
+    choice=DB.execute("select * from stations where line_id=#{s};")
+    choice.map do|el|
+      if el['id']!=el['line_id']
+      p el['name']
+        end
+    end
   end
 end

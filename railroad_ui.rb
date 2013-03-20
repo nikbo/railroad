@@ -12,14 +12,15 @@ end
 def menu
   choice = nil
   until choice == 'e'
-    puts "Press 'l' to list your lines or stations, 'a' to add a line or station "
+    puts "Press 'l' to list lines or stations, 'a' to add a line or station "
     puts "Press 'e' to exit."
     choice = gets.chomp
     case choice
       when 'l'
-        Road.new().list
+        Road.new.look
       when 'a'
         Road.new.add
+      when 'e'
         exit
       else
         invalid
