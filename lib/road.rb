@@ -68,16 +68,17 @@ class Road
   def station
     stations=DB.execute("SELECT * FROM stations")
     stations.map do|el|
-      p el['id'].to_s+" "+el['name']+el['line_id'].to_s
+      p el['id'].to_s+" "+el['name']
     end
     puts "Insert id of start station"
     station_choice=nil
     station_choice=gets.chomp
-    ch=DB.execute("select line_id from stations where line_id=#{station_choice};")
+    ch=DB.execute("select line_id from stations where id=#{station_choice};")
     s=ch[0]['line_id']
+    puts p=DB.execute("select id from stations where id=#{station_choice}")
     choice=DB.execute("select * from stations where line_id=#{s};")
     choice.map do|el|
-      if el['id']!=el['line_id']
+      if p[0]['id']!=el['id']
       p el['name']
         end
     end
